@@ -1,0 +1,25 @@
+robot:
+  total_height_m: 1.8          # largest plausible robot to start with
+  arm_dof: 7
+  link_length_fractions:       # of arm length, initial guess; bounds below
+    upper_arm: 0.5
+    forearm: 0.5
+payload:
+  mass_kg: 2.0
+  com_offset_m: [0.0, 0.0, 0.1]
+workspace:
+  min_reach_m: 0.6
+  poses: []                    # target end-effector poses
+trajectory:
+  max_speed_rad_s: 3.0
+  max_accel_rad_s2: 10.0
+catalog:
+  motors: data/motors/motors.yaml
+  gearboxes: data/motors/gearboxes.yaml
+bounds:
+  link_length_m: [0.2, 0.5]
+  link_mass_kg: [0.2, 3.0]
+optimizer:
+  objective: [mass]            # one entry -> single, several -> multi
+  seed: 0
+  max_evals: 5000
