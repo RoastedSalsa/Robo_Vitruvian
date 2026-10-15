@@ -1,0 +1,117 @@
+# Actuator modules (motor, planetary gearbox and driver in one), all CubeMars, values from
+# the specification tables on cubemars.com (product pages, October 2026). Torques and speeds
+# are at the module output: gearbox efficiency is already inside them.
+# rotor_inertia_gcm2 is on the motor side; the joint sees it multiplied by (ratio × belt or
+# capstan ratio)². Each motor runs at its datasheet voltage, rated_V; where a sheet gives
+# both 24 and 48 V, its 48 V point is used. max_V raises the voltage only where a datasheet
+# allows more than rated_V (no-load speed scales with it); none of these do.
+# `estimated` lists the fields that are guesses rather than datasheet values.
+# Motors you can't publish go in motors.local.toml (gitignored), same format.
+
+[[motor]]
+name = "AK40-10"
+rated_Nm = 1.3
+peak_Nm = 4.1
+mass_kg = 0.190
+ratio = 10
+rotor_inertia_gcm2 = 97.35
+rated_rpm = 370
+no_load_rpm = 435
+rated_V = 24
+source = "CubeMars AK40-10 V3.0 KV170"
+
+[[motor]]
+name = "AK45-10"
+rated_Nm = 2.5
+peak_Nm = 7.0
+mass_kg = 0.262
+ratio = 10
+rotor_inertia_gcm2 = 157.33
+rated_rpm = 120
+no_load_rpm = 180
+rated_V = 24
+source = "CubeMars AK45-10 V3.0 KV75"
+
+[[motor]]
+name = "AK45-36"
+rated_Nm = 8.0
+peak_Nm = 24.0
+mass_kg = 0.349
+ratio = 36
+rotor_inertia_gcm2 = 181.9
+rated_rpm = 40
+no_load_rpm = 52
+rated_V = 24
+source = "CubeMars AK45-36 V3.0 KV80"
+
+[[motor]]
+name = "AK60-6"
+rated_Nm = 3.0
+peak_Nm = 9.0
+mass_kg = 0.380
+ratio = 6
+rotor_inertia_gcm2 = 243.5
+rated_rpm = 490
+no_load_rpm = 640
+rated_V = 48
+source = "CubeMars AK60-6 V3.0 KV80, 24/48 V; 48 V point (24 V: 233 / 320 rpm)"
+
+[[motor]]
+name = "AK80-9"
+rated_Nm = 9.0
+peak_Nm = 22.0
+mass_kg = 0.490
+ratio = 9
+rotor_inertia_gcm2 = 1118.3
+rated_rpm = 390
+no_load_rpm = 570
+rated_V = 48
+source = "CubeMars AK80-9 V3.0 KV100"
+
+[[motor]]
+name = "AK70-9"
+rated_Nm = 8.5
+peak_Nm = 29.2
+mass_kg = 0.540
+ratio = 9
+rotor_inertia_gcm2 = 866.3
+rated_rpm = 260
+no_load_rpm = 320
+rated_V = 48
+source = "CubeMars AK70-9 V3.0 KV60"
+
+[[motor]]
+name = "AK60-39"
+rated_Nm = 24.0
+peak_Nm = 72.0
+mass_kg = 0.750
+ratio = 39
+rotor_inertia_gcm2 = 305
+rated_rpm = 70
+no_load_rpm = 98
+rated_V = 48
+source = "CubeMars AK60-39 V3.0 KV80"
+
+[[motor]]
+name = "AKH70-16"
+rated_Nm = 26.0
+peak_Nm = 78.0
+mass_kg = 0.879
+ratio = 16
+rotor_inertia_gcm2 = 1170
+rated_rpm = 90
+no_load_rpm = 105
+rated_V = 48
+source = "CubeMars AKH70-16 V1.0 KV41"
+
+[[motor]]
+name = "AK10-9"
+rated_Nm = 18.0
+peak_Nm = 53.0
+mass_kg = 0.940
+ratio = 9
+rotor_inertia_gcm2 = 1002
+rated_rpm = 235
+no_load_rpm = 320
+rated_V = 48
+source = "CubeMars AK10-9 V3.0 KV60"

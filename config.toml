@@ -1,0 +1,132 @@
+# Humanoid arm drive sizing. Run: python run.py [config.toml]
+
+[sweep]
+height_min_m = 1.0
+height_max_m = 2.0
+step_m = 0.01
+overview_every_m = 0.1      # max-payload overview in the terminal
+
+[proportions]               # link length as a fraction of total height (Drillis & Contini)
+upper_arm = 0.186
+forearm = 0.146
+hand = 0.108
+
+[structure]                 # robot structure, not human tissue; drives come on top
+reference_height_m = 1.8
+mass_exponent = 1.5         # mass ∝ height^1.5: longer links, slightly thicker walls
+upper_arm_kg = 0.40         # at 1.8 m: Ø40×2 aluminium tube, two motor flanges, cabling, cover
+forearm_kg = 0.32
+hand_kg = 0.70              # the robot hand, separate from the payload
+hand_com = 0.4              # hand centre of mass, fraction of hand length from the wrist
+
+[payload]
+mass_kg = [1, 2, 3, 4, 5]   # each is swept separately
+position = 0.5              # grasp point, fraction of hand length from the wrist
+accel_m_s2 = 5.0            # max linear acceleration at the payload (UR cobots default to 1.2 for linear moves)
+
+[motors]
+catalog = "motors.toml"
+local_catalog = "motors.local.toml"   # optional, gitignored: motors you can't publish
+exclude = ["AKH70-16"]      # kept for the legs; a joint's `allow` list overrides this
+overhead = 0.20             # brackets, driver and cabling, as a fraction of motor mass, carried with the motor
+continuous_factor = 0.8     # holding torque           <= 0.8 x rated
+peak_factor = 0.8           # hold + accel torque      <= 0.8 x peak
+
+# Extra reduction after the module's own gearbox. Every motor is tried direct and with
+# each ratio below in each drive type; the lightest combination that passes wins, which
+# for a given motor and type is the smallest ratio that passes.
+# The output pulley or drum carries the joint's peak torque, so its diameter is the larger
+# of stage ratio × input diameter and 2 × torque / allowed tension. Masses, tensions and
+# diameters are estimates.
+[transmission]
+ratios = [1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 10, 12, 16]
+max_total_ratio = 50        # module gearbox × extra stage, for backdrivability
+
+[[drive]]
+name = "belt"               # timing belt, HTD 5M class, 15–25 mm wide
+efficiency = 0.96           # per stage; catalogues quote ~98% for the belt alone
+max_stage_ratio = 4
+max_stages = 2
+stage_kg = 0.05             # small pulley, belt, idler, bearings
+kg_per_ratio = 0.02         # growth of the output pulley per unit of stage ratio
+input_diameter_mm = 25
+tension_N = 1500            # allowed working tension
+
+[[drive]]
+name = "capstan"            # cable capstan, one stage, no backlash
+efficiency = 0.97
+max_stage_ratio = 8         # a published 8:1 arm uses a 19.4 mm sheave and a 155 mm drum
+max_stages = 1
+stage_kg = 0.03             # sheave, cable, tensioner
+kg_per_ratio = 0.015        # drum sector
+input_diameter_mm = 20      # cable bend radius sets the minimum sheave
+tension_N = 1200
+
+# Worst case for every joint: the arm stretched out horizontally, the joint's axis
+# horizontal and perpendicular to it. Positions are [link, fraction along it from its
+# proximal end]: ["upper_arm", 0] is the shoulder, ["upper_arm", 1] = ["forearm", 0] the
+# elbow, ["forearm", 1] the wrist. A motor sits at or before its joint and loads only
+# the joints before it; move one inwards (e.g. a wrist motor to ["forearm", 0.3]) to
+# take its mass off the joints it passes.
+# speed_rad_s: required while holding the load; human 99th-percentile speeds in daily
+#   tasks (Herneth et al. 2024). The shoulder uses shoulder rotation for all three.
+# max_drum_mm: largest output pulley or drum that fits there at the reference height
+#   (≈ human limb diameter), scaled with height.
+[[joint]]
+name = "J1"
+label = "shoulder pitch"
+at = ["upper_arm", 0.0]
+motor = ["upper_arm", 0.0]
+speed_rad_s = 2.8
+max_drum_mm = 120
+allow = ["AKH70-16"]       # lifts the exclude here: its mass loads no other arm joint
+
+[[joint]]
+name = "J2"
+label = "shoulder roll"
+at = ["upper_arm", 0.0]
+motor = ["upper_arm", 0.0]
+speed_rad_s = 2.8
+max_drum_mm = 120
+allow = ["AKH70-16"]       # lifts the exclude here: its mass loads no other arm joint
+
+[[joint]]
+name = "J3"
+label = "upper-arm yaw"
+at = ["upper_arm", 0.0]
+motor = ["upper_arm", 0.0]
+speed_rad_s = 2.8
+max_drum_mm = 120
+allow = ["AKH70-16"]       # lifts the exclude here: its mass loads no other arm joint
+
+[[joint]]
+name = "J4"
+label = "elbow pitch"
+at = ["upper_arm", 1.0]
+motor = ["upper_arm", 1.0]
+speed_rad_s = 3.8
+max_drum_mm = 100
+
+[[joint]]
+name = "J5"
+label = "forearm roll"
+at = ["forearm", 0.0]
+motor = ["forearm", 0.0]
+speed_rad_s = 3.2
+max_drum_mm = 90
+
+[[joint]]
+name = "J6"
+label = "wrist pitch"
+at = ["forearm", 1.0]
+motor = ["forearm", 1.0]
+speed_rad_s = 5.2
+max_drum_mm = 70
+
+[[joint]]
+name = "J7"
+label = "wrist yaw"
+at = ["forearm", 1.0]
+motor = ["forearm", 1.0]
+speed_rad_s = 1.8
+max_drum_mm = 70

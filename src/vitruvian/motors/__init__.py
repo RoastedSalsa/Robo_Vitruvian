@@ -1,1 +1,0 @@
-"""Motors and gearboxes."""

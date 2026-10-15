@@ -1,1 +1,0 @@
-"""Robot size / motor optimization."""

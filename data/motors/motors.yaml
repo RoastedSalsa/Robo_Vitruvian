@@ -1,9 +1,0 @@
-# Placeholder entries: replace with datasheet values. Units are in the key suffix.
-- name: example_motor_a
-  source: placeholder
-  peak_torque_Nm: 1.0
-  continuous_torque_Nm: 0.4
-  max_speed_rpm: 5000
-  mass_kg: 0.25
-  rotor_inertia_kgm2: 5.0e-6
-  cost_eur: 100
